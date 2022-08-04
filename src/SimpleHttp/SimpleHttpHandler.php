@@ -63,6 +63,7 @@ class SimpleHttpHandler {
       $requestBody = json_encode($body);
     } else {
       $requestBody = http_build_query($body);
+      $headers["Content-Type"] = "application/x-www-form-urlencoded";
     }
 
     return $this->_sendWithRedirect(self::METHOD_POST, $formated, $headers, $requestBody);
@@ -119,7 +120,7 @@ class SimpleHttpHandler {
     $url
   ): array {
 
-    preg_match("/(https?:\/\/|)([^\/?#]+)([^?#]*)(\??[^#]*)(#?.*)/", $url, $matches);
+    preg_match("/(https?:\/\/|)([^\/?#]+|)([^?#]*)(\??[^#]*)(#?.*)/", $url, $matches);
     $protocol = $matches[1];
     $domain = $matches[2];
     $path = $matches[3];
@@ -150,6 +151,7 @@ class SimpleHttpHandler {
     $histories = [];
 
     while (true) {
+      $anaUrl = $this->_analyzeUrl($requestUrl);
       $response = $this->_sendRequest($requestMethod, $requestUrl, $requestHeaders, $requestBody);
 
       $histories[] = $response;
@@ -169,8 +171,13 @@ class SimpleHttpHandler {
         break;
       }
 
+      $anaLocation = $this->_analyzeUrl($response->getResponseHeader()->getLocation());
+      $protocol = $anaLocation['protocol'] ?: "https://";
+      $domain = $anaLocation['domain'] ?: $anaUrl['domain'];
+      $fragment = $anaLocation['fragment'] ?: $anaUrl['fragment'];
+
       $requestMethod = $method;
-      $requestUrl = $response->getResponseHeader()->getLocation();
+      $requestUrl = $protocol . $domain . $anaLocation['path'] . $anaLocation['query'] . $fragment;
       $requestHeaders = [];
       $requestBody = "";
     }
@@ -212,14 +219,14 @@ class SimpleHttpHandler {
         $exAttr = explode("=", $attr);
 
         if ($newCookie) {
-          match ($exAttr[0]) {
-            SimpleHttpCookie::DOMAIN => $newCookie->setDomain($exAttr[1]),
-            SimpleHttpCookie::EXPIRES => $newCookie->setExpires($exAttr[1]),
-            SimpleHttpCookie::HTTP_ONLY => $newCookie->setHttpOnly(),
-            SimpleHttpCookie::MAX_AGE => $newCookie->setMaxAge((int) $exAttr[1]),
-            SimpleHttpCookie::PATH => $newCookie->setPath($exAttr[1]),
-            SimpleHttpCookie::SAME_SITE => $newCookie->setSameSite($exAttr[1]),
-            SimpleHttpCookie::SECURE => $newCookie->setSecure(),
+          match (strtolower($exAttr[0])) {
+            strtolower(SimpleHttpCookie::DOMAIN) => $newCookie->setDomain($exAttr[1]),
+            strtolower(SimpleHttpCookie::EXPIRES) => $newCookie->setExpires($exAttr[1]),
+            strtolower(SimpleHttpCookie::HTTP_ONLY) => $newCookie->setHttpOnly(),
+            strtolower(SimpleHttpCookie::MAX_AGE) => $newCookie->setMaxAge((int) $exAttr[1]),
+            strtolower(SimpleHttpCookie::PATH) => $newCookie->setPath($exAttr[1]),
+            strtolower(SimpleHttpCookie::SAME_SITE) => $newCookie->setSameSite($exAttr[1]),
+            strtolower(SimpleHttpCookie::SECURE) => $newCookie->setSecure(),
             default => null
           };
         } else {
@@ -261,11 +268,15 @@ class SimpleHttpHandler {
     $protocol = $anaUrl["protocol"];
     $domain = $anaUrl["domain"];
     $path = $anaUrl["path"];
+    $query = $anaUrl["query"];
 
-    $request[] = "$method $path HTTP/1.1";
+    $request[] = "$method $path$query HTTP/1.1";
     $request[] = "Host: $domain";
     foreach ($headers as $headerKey => $headerValue) {
-      if ($headerKey === "Referer" || $headerKey === "Cookie") {
+      if ($headerKey === "Host"
+        || $headerKey === "Referer"
+        || $headerKey === "Cookie"
+        || $headerKey === "Content-Length") {
         continue;
       }
       $request[] = "$headerKey: $headerValue";
@@ -279,11 +290,13 @@ class SimpleHttpHandler {
         $request[] = "Cookie: " . $cookieString;
       }
     }
+    $request[] = "Content-Length: " . strlen($body);
+
     $headerString = implode(Constants::CRLF, $request);
     $request[] = "";
     $request[] = $body;
 
-    SimpleLogger::info('request to ' . $domain);
+    SimpleLogger::info('request to ' . $url);
 
     $context = stream_context_create();
     stream_context_set_option($context, 'ssl', 'verify_peer', false);

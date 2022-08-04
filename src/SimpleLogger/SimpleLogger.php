@@ -61,10 +61,11 @@ class SimpleLogger {
     $logLevelStr = self::LOG_LEVEL_STR[$logLevel];
 
     $callFile = debug_backtrace()[1]["file"];
+    $callLine = debug_backtrace()[1]["line"];
     $callDir = DirectoryUtils::getParentDirectory($callFile);
-    $fileName = substr($callFile, strlen($callDir));
+    $fileName = substr($callFile, strlen($callDir) + 1);
 
-    $message = "$date [$pid]: $logLevelStr [$fileName]$message";
+    $message = "$date [$pid]: $logLevelStr [$fileName:$callLine]$message";
 
     file_put_contents(self::$logFilePath, $message . Constants::CRLF, FILE_APPEND);
   }

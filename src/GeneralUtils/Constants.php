@@ -10,6 +10,7 @@ class Constants {
   /**
    * NL Code
    */
+  const LF = "\n";
   const CRLF = "\r\n";
 
 }

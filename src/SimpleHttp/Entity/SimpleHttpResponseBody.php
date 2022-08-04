@@ -19,4 +19,10 @@ class SimpleHttpResponseBody {
     $this->responseBody = $responseBody;
   }
 
+  /**
+   * @return string
+   */
+  public function getResponseBodyStr(): string {
+    return $this->responseBody;
+  }
 }
