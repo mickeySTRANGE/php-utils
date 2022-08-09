@@ -10,7 +10,6 @@ use mickeySTRANGE\phpUtils\SimpleHttp\Entity\SimpleHttpResponseBody;
 use mickeySTRANGE\phpUtils\SimpleHttp\Entity\SimpleHttpResponseHeader;
 use mickeySTRANGE\phpUtils\SimpleHttp\Exceptions\SimpleHttpConnectionException;
 use mickeySTRANGE\phpUtils\SimpleHttp\Exceptions\SimpleHttpInvalidIUrlException;
-use mickeySTRANGE\phpUtils\SimpleLogger\SimpleLogger;
 
 /**
  * Class SimpleHttpHandler
@@ -24,6 +23,8 @@ class SimpleHttpHandler {
 
   private bool $useReferer = false;
   private bool $useCookie = false;
+  private bool $sslVerify = true;
+  private bool $logOutput = true;
 
   private string $referer = "";
   /** @var SimpleHttpCookie[] */
@@ -84,6 +85,20 @@ class SimpleHttpHandler {
   }
 
   /**
+   * @param bool $sslVerify
+   */
+  public function setSslVerify(bool $sslVerify): void {
+    $this->sslVerify = $sslVerify;
+  }
+
+  /**
+   * @param bool $logOutput
+   */
+  public function setLogOutput(bool $logOutput): void {
+    $this->logOutput = $logOutput;
+  }
+
+  /**
    * @param $url
    * @return string
    * @throws SimpleHttpInvalidIUrlException
@@ -128,6 +143,14 @@ class SimpleHttpHandler {
     $fragment = $matches[5];
 
     return ["protocol" => $protocol, "domain" => $domain, "path" => $path, "query" => $query, "fragment" => $fragment];
+  }
+
+  /**
+   * @param string $message
+   * @param int    $level
+   */
+  private function log($message, $level) {
+
   }
 
   /**
@@ -296,14 +319,16 @@ class SimpleHttpHandler {
     $request[] = "";
     $request[] = $body;
 
-    SimpleLogger::info('request to ' . $url);
+    $this->log('request to ' . $url, LOG_INFO);
 
     $context = stream_context_create();
-    stream_context_set_option($context, 'ssl', 'verify_peer', false);
-    stream_context_set_option($context, 'ssl', 'verify_host', false);
+    if ($this->sslVerify) {
+      stream_context_set_option($context, 'ssl', 'verify_peer', false);
+      stream_context_set_option($context, 'ssl', 'verify_host', false);
+    }
     $fp = stream_socket_client('ssl://' . $domain . ':443', $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
     if (!$fp) {
-      SimpleLogger::err('connection Error! ' . $errno . ':' . $errstr);
+      $this->log('connection Error! ' . $errno . ':' . $errstr, LOG_ERR);
       throw new SimpleHttpConnectionException();
     }
     stream_set_timeout($fp, 10);
@@ -361,8 +386,9 @@ class SimpleHttpHandler {
       $RESPONSE_BODY = $str;
     }
 
-    SimpleLogger::info(
-      'request finish ' . $statusCode . ' header:' . strlen($RESPONSE_HEADER) . ' body:' . strlen($RESPONSE_BODY)
+    $this->log(
+      'request finish ' . $statusCode . ' header:' . strlen($RESPONSE_HEADER) . ' body:' . strlen($RESPONSE_BODY),
+      LOG_INFO
     );
 
     return
