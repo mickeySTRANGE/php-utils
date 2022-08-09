@@ -8,5 +8,10 @@
       "name": "mickeySTRANGE"
     }
   ],
-  "require": {}
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "mickeySTRANGE\\phpUtils\\": "src"
+    }
+  }
 }
