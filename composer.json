@@ -1,0 +1,12 @@
+{
+  "name": "mickey-strange/php-utils",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mickeySTRANGE"
+    }
+  ],
+  "require": {}
+}
