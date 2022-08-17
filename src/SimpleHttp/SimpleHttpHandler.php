@@ -151,6 +151,9 @@ class SimpleHttpHandler {
    */
   private function log($message, $level) {
 
+    // for heroku log
+    error_log($message);
+
   }
 
   /**
