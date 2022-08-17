@@ -44,7 +44,7 @@ class SimpleHttpResponseHeader {
       $key = substr($line, 0, strpos($line, ":"));
       $value = trim(substr($line, strpos($line, ":") + 1));
 
-      $this->headers[$key][] = $value;
+      $this->headers[strtolower($key)][] = $value;
     }
   }
 
@@ -54,10 +54,10 @@ class SimpleHttpResponseHeader {
    */
   private function getSingleHeader(string $name): string {
 
-    if (!array_key_exists($name, $this->headers)) {
+    if (!array_key_exists(strtolower($name), $this->headers)) {
       return "";
     } else {
-      return $this->headers[$name][0];
+      return $this->headers[strtolower($name)][0];
     }
   }
 
@@ -67,10 +67,10 @@ class SimpleHttpResponseHeader {
    */
   private function getMultipleHeader(string $name): array {
 
-    if (!array_key_exists($name, $this->headers)) {
+    if (!array_key_exists(strtolower($name), $this->headers)) {
       return [];
     } else {
-      return $this->headers[$name];
+      return $this->headers[strtolower($name)];
     }
   }
 
