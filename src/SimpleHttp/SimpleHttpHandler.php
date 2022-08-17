@@ -352,22 +352,28 @@ class SimpleHttpHandler {
       $RESPONSE_HEADER .= $temporaryData;
     }
 
+    $responseHeader = new SimpleHttpResponseHeader($RESPONSE_HEADER);
+
     // 結果の取得
-    $start = intval(microtime(true));
-    $len = 0;
-    while (!feof($fp)) {
-      $RESPONSE_BODY .= fgets($fp, 4096);
-      if (intval(microtime(true)) - $start > 10 && strlen($RESPONSE_BODY) === $len) {
-        break;
+    if ($responseHeader->getContentLength() > 0) {
+      $RESPONSE_BODY .= fgets($fp, $responseHeader->getContentLength());
+    } else {
+      $start = intval(microtime(true));
+      $len = 0;
+      while (!feof($fp)) {
+        $RESPONSE_BODY .= fgets($fp, 4096);
+        if (intval(microtime(true)) - $start > 10 && strlen($RESPONSE_BODY) === $len) {
+          break;
+        }
+        $len = strlen($RESPONSE_BODY);
       }
-      $len = strlen($RESPONSE_BODY);
     }
     fclose($fp);
 
     preg_match('!^HTTP/(\d\.\d) (\d{3})(?: (.+))?!', $statusLine, $match);
     $statusCode = (int) $match[2];
 
-    if (str_contains($RESPONSE_HEADER, 'Transfer-Encoding: chunked')) {
+    if ($responseHeader->getTransferEncoding() == "chunked") {
       $tmp = $RESPONSE_BODY;
       $eol = "\r\n";
       $add = strlen($eol);
@@ -400,7 +406,7 @@ class SimpleHttpHandler {
         $headerString,
         $body,
         $statusCode,
-        new SimpleHttpResponseHeader($RESPONSE_HEADER),
+        $responseHeader,
         new SimpleHttpResponseBody($RESPONSE_BODY)
       );
   }

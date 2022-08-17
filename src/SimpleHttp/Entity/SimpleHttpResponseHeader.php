@@ -49,15 +49,37 @@ class SimpleHttpResponseHeader {
   }
 
   /**
+   * @param string $name
+   * @return string
+   */
+  private function getSingleHeader(string $name): string {
+
+    if (!array_key_exists($name, $this->headers)) {
+      return "";
+    } else {
+      return $this->headers[$name][0];
+    }
+  }
+
+  /**
+   * @param string $name
+   * @return array
+   */
+  private function getMultipleHeader(string $name): array {
+
+    if (!array_key_exists($name, $this->headers)) {
+      return [];
+    } else {
+      return $this->headers[$name];
+    }
+  }
+
+  /**
    * @return string
    */
   public function getLocation(): string {
 
-    if (!array_key_exists("Location", $this->headers)) {
-      return "";
-    } else {
-      return $this->headers["Location"][0];
-    }
+    return $this->getSingleHeader("Location");
   }
 
   /**
@@ -65,12 +87,23 @@ class SimpleHttpResponseHeader {
    */
   public function getSetCookie(): array {
 
-    if (!array_key_exists("Set-Cookie", $this->headers)) {
-      return [];
-    } else {
-      return $this->headers["Set-Cookie"];
-    }
+    return $this->getMultipleHeader("Set-Cookie");
   }
 
+  /**
+   * @return string
+   */
+  public function getContentLength(): string {
+
+    return $this->getSingleHeader("Content-Length");
+  }
+
+  /**
+   * @return string
+   */
+  public function getTransferEncoding(): string {
+
+    return $this->getSingleHeader("Transfer-Encoding");
+  }
 
 }
