@@ -356,7 +356,9 @@ class SimpleHttpHandler {
 
     // 結果の取得
     if ($responseHeader->getContentLength() > 0) {
+      error_log("length:".$responseHeader->getContentLength());
       $RESPONSE_BODY .= fgets($fp, $responseHeader->getContentLength());
+      error_log($RESPONSE_BODY);
     } else {
       $start = intval(microtime(true));
       $len = 0;
