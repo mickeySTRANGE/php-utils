@@ -1,6 +1,6 @@
 <?php
 
-namespace mickeySTRANGE\phpUtils\SimpleHttp\Exceptions;
+namespace mickeySTRANGE\phpUtils\Exceptions;
 
 use Exception;
 
@@ -8,6 +8,7 @@ use Exception;
  * Class SimpleHttpInvalidIUrlException
  * @package mickeySTRANGE\phpUtils\SimpleHttp\Exceptions
  */
-class SimpleHttpInvalidIUrlException extends Exception{
+class SimpleHttpInvalidIUrlException extends Exception
+{
 
 }

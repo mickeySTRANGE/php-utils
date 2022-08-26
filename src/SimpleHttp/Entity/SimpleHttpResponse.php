@@ -7,7 +7,8 @@ namespace mickeySTRANGE\phpUtils\SimpleHttp\Entity;
  * Class SimpleHttpResponse
  * @package mickeySTRANGE\phpUtils\SimpleHttp
  */
-class SimpleHttpResponse {
+class SimpleHttpResponse
+{
 
   private string $requestMethod;
   private string $requestHeader;
@@ -22,12 +23,12 @@ class SimpleHttpResponse {
 
   /**
    * SimpleHttpResponse constructor.
-   * @param string                   $requestMethod
-   * @param string                   $requestHeader
-   * @param string                   $requestBody
-   * @param int                      $statusCode
+   * @param string $requestMethod
+   * @param string $requestHeader
+   * @param string $requestBody
+   * @param int $statusCode
    * @param SimpleHttpResponseHeader $responseHeader
-   * @param SimpleHttpResponseBody   $responseBody
+   * @param SimpleHttpResponseBody $responseBody
    */
   public function __construct(
     string $requestMethod,
@@ -48,7 +49,8 @@ class SimpleHttpResponse {
   /**
    * @param SimpleHttpResponse $response
    */
-  public function addRedirectHistory(SimpleHttpResponse $response) {
+  public function addRedirectHistory(SimpleHttpResponse $response)
+  {
 
     $this->redirectHistory[] = $response;
   }
@@ -61,49 +63,56 @@ class SimpleHttpResponse {
   /**
    * @return string
    */
-  public function getRequestMethod(): string {
+  public function getRequestMethod(): string
+  {
     return $this->requestMethod;
   }
 
   /**
    * @return string
    */
-  public function getRequestHeader(): string {
+  public function getRequestHeader(): string
+  {
     return $this->requestHeader;
   }
 
   /**
    * @return string
    */
-  public function getRequestBody(): string {
+  public function getRequestBody(): string
+  {
     return $this->requestBody;
   }
 
   /**
    * @return int
    */
-  public function getStatusCode(): int {
+  public function getStatusCode(): int
+  {
     return $this->statusCode;
   }
 
   /**
    * @return SimpleHttpResponseHeader
    */
-  public function getResponseHeader(): SimpleHttpResponseHeader {
+  public function getResponseHeader(): SimpleHttpResponseHeader
+  {
     return $this->responseHeader;
   }
 
   /**
    * @return SimpleHttpResponseBody
    */
-  public function getResponseBody(): SimpleHttpResponseBody {
+  public function getResponseBody(): SimpleHttpResponseBody
+  {
     return $this->responseBody;
   }
 
   /**
    * @return SimpleHttpResponse[]
    */
-  public function getRedirectHistory(): array {
+  public function getRedirectHistory(): array
+  {
     return $this->redirectHistory;
   }
 }

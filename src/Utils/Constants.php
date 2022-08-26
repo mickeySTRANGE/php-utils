@@ -1,12 +1,13 @@
 <?php
 
-namespace mickeySTRANGE\phpUtils\GeneralUtils;
+namespace mickeySTRANGE\phpUtils\Utils;
 
 /**
  * Class Constants
  * @package mickeySTRANGE\phpUtils
  */
-class Constants {
+class Constants
+{
   /**
    * NL Code
    */

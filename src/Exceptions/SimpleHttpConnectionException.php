@@ -1,6 +1,6 @@
 <?php
 
-namespace mickeySTRANGE\phpUtils\SimpleHttp\Exceptions;
+namespace mickeySTRANGE\phpUtils\Exceptions;
 
 use Exception;
 

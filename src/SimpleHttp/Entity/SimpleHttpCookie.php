@@ -3,11 +3,14 @@
 
 namespace mickeySTRANGE\phpUtils\SimpleHttp\Entity;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Class SimpleHttpCookie
  * @package mickeySTRANGE\phpUtils\SimpleHttp\Entity
  */
-class SimpleHttpCookie {
+class SimpleHttpCookie
+{
 
   private string $key;
   private string $value;
@@ -19,7 +22,7 @@ class SimpleHttpCookie {
   private string $sameSite = "Lax";
 
   private bool $isExistDomainAttribute = false;
-  private bool $isDestructioned = false;
+  private bool $isDestructed = false;
 
   const EXPIRES = "Expires";
   const MAX_AGE = "Max-Age";
@@ -36,7 +39,8 @@ class SimpleHttpCookie {
    * @param string $domain
    * @param string $path
    */
-  public function __construct(string $key, string $value, string $domain, string $path) {
+  public function __construct(string $key, string $value, string $domain, string $path)
+  {
     $this->key = $key;
     $this->value = $value;
     $this->domain = $domain;
@@ -47,10 +51,11 @@ class SimpleHttpCookie {
    * @param string $protocol
    * @param string $domain
    * @param string $path
-   * @param int    $time
+   * @param int $time
    * @return bool
    */
-  public function sendCheck(string $protocol, string $domain, string $path, int $time): bool {
+  #[Pure] public function sendCheck(string $protocol, string $domain, string $path, int $time): bool
+  {
 
     $isTimeOk = $this->expires === 0 || $time < $this->expires;
     $isDomainOk = $this->isExistDomainAttribute
@@ -67,10 +72,11 @@ class SimpleHttpCookie {
   /**
    * @param string $domain
    */
-  public function setDomain(string $domain): void {
+  public function setDomain(string $domain): void
+  {
 
     if (strrpos($domain, ".") === strlen($domain) - 1) {
-      $this->isDestructioned = true;
+      $this->isDestructed = true;
       return;
     }
 
@@ -79,14 +85,15 @@ class SimpleHttpCookie {
       $this->domain = $domain;
       $this->isExistDomainAttribute = true;
     } else {
-      $this->isDestructioned = true;
+      $this->isDestructed = true;
     }
   }
 
   /**
    * @param string $expires
    */
-  public function setExpires(string $expires): void {
+  public function setExpires(string $expires): void
+  {
 
     if ($this->expires !== "") {
       return;
@@ -103,7 +110,8 @@ class SimpleHttpCookie {
   /**
    * @param int $maxAge
    */
-  public function setMaxAge(int $maxAge): void {
+  public function setMaxAge(int $maxAge): void
+  {
 
     $this->expires = time() + $maxAge;
   }
@@ -111,98 +119,112 @@ class SimpleHttpCookie {
   /**
    * @param string $path
    */
-  public function setPath(string $path): void {
+  public function setPath(string $path): void
+  {
     $this->path = $path;
   }
 
   /**
    *
    */
-  public function setSecure(): void {
+  public function setSecure(): void
+  {
     $this->secure = true;
   }
 
   /**
    *
    */
-  public function setHttpOnly(): void {
+  public function setHttpOnly(): void
+  {
     $this->httpOnly = true;
   }
 
   /**
    * @param string $sameSite
    */
-  public function setSameSite(string $sameSite): void {
+  public function setSameSite(string $sameSite): void
+  {
     $this->sameSite = $sameSite;
   }
 
   /**
    * @return string
    */
-  public function getKey(): string {
+  public function getKey(): string
+  {
     return $this->key;
   }
 
   /**
    * @return string
    */
-  public function getValue(): string {
+  public function getValue(): string
+  {
     return $this->value;
   }
 
   /**
    * @return int
    */
-  public function getExpires(): int {
+  public function getExpires(): int
+  {
     return $this->expires;
   }
 
   /**
    * @return string
    */
-  public function getDomain(): string {
+  public function getDomain(): string
+  {
     return $this->domain;
   }
 
   /**
    * @return string
    */
-  public function getPath(): string {
+  public function getPath(): string
+  {
     return $this->path;
   }
 
   /**
    * @return bool
    */
-  public function isSecure(): bool {
+  public function isSecure(): bool
+  {
     return $this->secure;
   }
 
   /**
    * @return bool
    */
-  public function isHttpOnly(): bool {
+  public function isHttpOnly(): bool
+  {
     return $this->httpOnly;
   }
 
   /**
    * @return string
    */
-  public function getSameSite(): string {
+  public function getSameSite(): string
+  {
     return $this->sameSite;
   }
 
   /**
    * @return bool
    */
-  public function isDestructioned(): bool {
-    return $this->isDestructioned;
+  public function isDestructed(): bool
+  {
+    return $this->isDestructed;
   }
 
   /**
    * @return bool
    */
-  public function isExistDomainAttribute(): bool {
+  public function isExistDomainAttribute(): bool
+  {
     return $this->isExistDomainAttribute;
   }
 }

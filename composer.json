@@ -8,7 +8,10 @@
       "name": "mickeySTRANGE"
     }
   ],
-  "require": {},
+  "require": {
+    "eftec/bladeone": "^4.5",
+    "ext-pdo": "*"
+  },
   "autoload": {
     "psr-4": {
       "mickeySTRANGE\\phpUtils\\": "src"

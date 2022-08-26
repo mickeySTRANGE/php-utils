@@ -7,7 +7,8 @@ namespace mickeySTRANGE\phpUtils\SimpleHttp\Entity;
  * Class SimpleHttpResponseBody
  * @package mickeySTRANGE\phpUtils\SimpleHttp
  */
-class SimpleHttpResponseBody {
+class SimpleHttpResponseBody
+{
 
   private string $responseBody;
 
@@ -15,14 +16,16 @@ class SimpleHttpResponseBody {
    * SimpleHttpResponseBody constructor.
    * @param string $responseBody
    */
-  public function __construct(string $responseBody) {
+  public function __construct(string $responseBody)
+  {
     $this->responseBody = $responseBody;
   }
 
   /**
    * @return string
    */
-  public function getResponseBodyStr(): string {
+  public function getResponseBodyStr(): string
+  {
     return $this->responseBody;
   }
 }

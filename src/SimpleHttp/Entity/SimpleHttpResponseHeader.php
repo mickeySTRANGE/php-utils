@@ -3,11 +3,14 @@
 
 namespace mickeySTRANGE\phpUtils\SimpleHttp\Entity;
 
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Class SimpleHttpResponseHeader
  * @package mickeySTRANGE\phpUtils\SimpleHttp
  */
-class SimpleHttpResponseHeader {
+class SimpleHttpResponseHeader
+{
 
   private string $responseHeader;
   private string $statusLine;
@@ -17,7 +20,8 @@ class SimpleHttpResponseHeader {
    * SimpleHttpResponseHeader constructor.
    * @param string $responseHeader
    */
-  public function __construct(string $responseHeader) {
+  public function __construct(string $responseHeader)
+  {
     $this->responseHeader = $responseHeader;
     $this->_init();
   }
@@ -25,7 +29,8 @@ class SimpleHttpResponseHeader {
   /**
    * init headers for single getters
    */
-  private function _init() {
+  private function _init()
+  {
 
     $isFirst = true;
 
@@ -52,7 +57,8 @@ class SimpleHttpResponseHeader {
    * @param string $name
    * @return string
    */
-  private function getSingleHeader(string $name): string {
+  private function getSingleHeader(string $name): string
+  {
 
     if (!array_key_exists(strtolower($name), $this->headers)) {
       return "";
@@ -65,7 +71,8 @@ class SimpleHttpResponseHeader {
    * @param string $name
    * @return array
    */
-  private function getMultipleHeader(string $name): array {
+  #[Pure] private function getMultipleHeader(string $name): array
+  {
 
     if (!array_key_exists(strtolower($name), $this->headers)) {
       return [];
@@ -77,7 +84,16 @@ class SimpleHttpResponseHeader {
   /**
    * @return string
    */
-  public function getLocation(): string {
+  public function getStatusLine(): string
+  {
+    return $this->statusLine;
+  }
+
+  /**
+   * @return string
+   */
+  public function getLocation(): string
+  {
 
     return $this->getSingleHeader("Location");
   }
@@ -85,7 +101,8 @@ class SimpleHttpResponseHeader {
   /**
    * @return array
    */
-  public function getSetCookie(): array {
+  #[Pure] public function getSetCookie(): array
+  {
 
     return $this->getMultipleHeader("Set-Cookie");
   }
@@ -93,7 +110,8 @@ class SimpleHttpResponseHeader {
   /**
    * @return string
    */
-  public function getContentLength(): string {
+  public function getContentLength(): string
+  {
 
     return $this->getSingleHeader("Content-Length");
   }
@@ -101,7 +119,8 @@ class SimpleHttpResponseHeader {
   /**
    * @return string
    */
-  public function getTransferEncoding(): string {
+  public function getTransferEncoding(): string
+  {
 
     return $this->getSingleHeader("Transfer-Encoding");
   }
