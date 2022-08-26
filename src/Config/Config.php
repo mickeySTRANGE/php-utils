@@ -16,6 +16,14 @@ class Config
   const CONFIG_PREFIX = 'mickeySTRANGE.phpUtils.';
 
   /**
+   * @param string $path
+   */
+  public static function loadIniFile(string $path)
+  {
+    self::$config = array_merge(self::$config, parse_ini_file($path));
+  }
+
+  /**
    * @return bool
    */
   public static function getIsUseOB(): bool
