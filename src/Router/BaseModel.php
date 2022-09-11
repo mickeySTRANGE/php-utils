@@ -11,24 +11,24 @@ namespace mickeySTRANGE\phpUtils\Router;
 abstract class BaseModel
 {
 
-  /**
-   * called by PDO
-   *
-   * @param string $name
-   * @param $value
-   */
-  public function __set(string $name, $value): void
-  {
-    $fieldName = $this->snakeToCamel($name);
-    $this->$fieldName = $value;
-  }
+    /**
+     * called by PDO
+     *
+     * @param string $name
+     * @param $value
+     */
+    public function __set(string $name, $value): void
+    {
+        $fieldName = $this->toSetterFunctionName($name);
+        $this->$fieldName($value);
+    }
 
-  /**
-   * @param string $str
-   * @return string
-   */
-  private function snakeToCamel(string $str): string
-  {
-    return lcfirst(strtr(ucwords(strtr($str, ['_' => ' '])), [' ' => '']));
-  }
+    /**
+     * @param string $str
+     * @return string
+     */
+    private function toSetterFunctionName(string $str): string
+    {
+        return "set" . strtr(ucwords(strtr($str, ['_' => ' '])), [' ' => '']);
+    }
 }
