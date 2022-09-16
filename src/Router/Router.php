@@ -4,13 +4,13 @@ namespace mickeySTRANGE\phpUtils\Router;
 
 use mickeySTRANGE\phpUtils\Exceptions\RouterException;
 use mickeySTRANGE\phpUtils\Config\Config;
+use mickeySTRANGE\phpUtils\Exceptions\RouterForwardHandleException;
 
 
 /**
  * Class Router
  */
-class Router
-{
+class Router {
 
   private string $defaultController = "";
   private string $controllerNamespace = "";
@@ -22,8 +22,7 @@ class Router
    *
    * @throws RouterException
    */
-  public function execute()
-  {
+  public function execute() {
 
     if (Config::getIsUseOB()) {
       ob_start();
@@ -36,45 +35,50 @@ class Router
     }
 
     $controllerName = strlen($path) > 1 ? substr($path, 1) : $this->defaultController;
-    $controllerClass = $this->controllerNamespace . '\\' . $controllerName . "Controller";
-    $formClass = $this->formNamespace . '\\' . $controllerName . "Form";
 
-    /** @var BaseController $controller */
-    $controller = new $controllerClass;
-    $controller->setViewFileDirectory($this->viewFileDirectory);
-    $controller->setFormClass($formClass);
-    $controller->execute();
+    while (true) {
+      $controllerClass = $this->controllerNamespace . '\\' . $controllerName . "Controller";
+      $formClass = $this->formNamespace . '\\' . $controllerName . "Form";
+
+      try {
+        /** @var BaseController $controller */
+        $controller = new $controllerClass;
+        $controller->setViewFileDirectory($this->viewFileDirectory);
+        $controller->setFormClass($formClass);
+        $controller->execute();
+      } catch (RouterForwardHandleException $e) {
+        $controllerName = $e->getController();
+        continue;
+      }
+      break;
+    }
   }
 
   /**
    * @param string $defaultController
    */
-  public function setDefaultController(string $defaultController): void
-  {
+  public function setDefaultController(string $defaultController): void {
     $this->defaultController = $defaultController;
   }
 
   /**
    * @param string $viewFileDirectory
    */
-  public function setViewFileDirectory(string $viewFileDirectory): void
-  {
+  public function setViewFileDirectory(string $viewFileDirectory): void {
     $this->viewFileDirectory = $viewFileDirectory;
   }
 
   /**
    * @param string $controllerNamespace
    */
-  public function setControllerNamespace(string $controllerNamespace): void
-  {
+  public function setControllerNamespace(string $controllerNamespace): void {
     $this->controllerNamespace = $controllerNamespace;
   }
 
   /**
    * @param string $formNamespace
    */
-  public function setFormNamespace(string $formNamespace): void
-  {
+  public function setFormNamespace(string $formNamespace): void {
     $this->formNamespace = $formNamespace;
   }
 }

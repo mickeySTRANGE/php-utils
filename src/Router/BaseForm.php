@@ -35,4 +35,11 @@ abstract class BaseForm {
       return $get;
     }
   }
+
+  /**
+   * @return bool
+   */
+  public function isValidParameter() {
+    return true;
+  }
 }

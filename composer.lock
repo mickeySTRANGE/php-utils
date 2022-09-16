@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fbf1977d52f98cfdf31393588d6e4e2a",
+    "content-hash": "a9aefea83b335f287f85eccea93e4eac",
     "packages": [
         {
             "name": "eftec/bladeone",
-            "version": "4.5.5",
+            "version": "4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EFTEC/BladeOne.git",
-                "reference": "3d83f5d527a5582f9937ad648705ec3223f39dba"
+                "reference": "f13280910e65bcbc6c644eb5d3bfc085c269c7c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/3d83f5d527a5582f9937ad648705ec3223f39dba",
-                "reference": "3d83f5d527a5582f9937ad648705ec3223f39dba",
+                "url": "https://api.github.com/repos/EFTEC/BladeOne/zipball/f13280910e65bcbc6c644eb5d3bfc085c269c7c4",
+                "reference": "f13280910e65bcbc6c644eb5d3bfc085c269c7c4",
                 "shasum": ""
             },
             "require": {
@@ -58,9 +58,9 @@
             ],
             "support": {
                 "issues": "https://github.com/EFTEC/BladeOne/issues",
-                "source": "https://github.com/EFTEC/BladeOne/tree/4.5.5"
+                "source": "https://github.com/EFTEC/BladeOne/tree/4.6"
             },
-            "time": "2022-07-16T14:05:23+00:00"
+            "time": "2022-08-26T21:45:02+00:00"
         }
     ],
     "packages-dev": [],
@@ -70,7 +70,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-openssl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
