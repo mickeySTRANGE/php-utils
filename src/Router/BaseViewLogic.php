@@ -45,6 +45,7 @@ abstract class BaseViewLogic
     try {
 
       $blade = new BladeOne($views, $cache, BladeOne::MODE_AUTO);
+      $blade->getCsrfToken();
       echo $blade->run($view, $this->viewData);
     } catch (Exception $e) {
       error_log($e->getMessage());
