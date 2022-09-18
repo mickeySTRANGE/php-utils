@@ -147,6 +147,7 @@ abstract class BaseController
         if ($_POST[$tokenKey] !== $_SESSION[$tokenKey]) {
             return false;
         }
+        error_log(6);
 
         return true;
     }

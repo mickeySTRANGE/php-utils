@@ -43,7 +43,7 @@ abstract class BaseViewLogic
         $view = $this->camelToSnake($match[1]);
 
         try {
-            $token = openssl_random_pseudo_bytes(32);
+            $token = bin2hex(openssl_random_pseudo_bytes(32));
             $tokenName = '_token';
             $_SESSION[$tokenName] = $token;
 
