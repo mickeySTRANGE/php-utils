@@ -19,6 +19,7 @@ abstract class BaseController
 
     private bool $forwarded = false;
     private bool $redirected = false;
+    private bool $terminated = false;
 
     protected string $formClass;
     protected BaseForm $form;
@@ -37,15 +38,15 @@ abstract class BaseController
                 $this->preMain();
             }
 
-            if (!$this->redirected && !$this->isValidCsrfToken()) {
+            if (!$this->terminated && !$this->redirected && !$this->isValidCsrfToken()) {
                 $this->errorCsrfToken();
             }
 
-            if (!$this->redirected && !$this->isValidParameter()) {
+            if (!$this->terminated && !$this->redirected && !$this->isValidParameter()) {
                 $this->errorParameter();
             }
 
-            if (!$this->redirected) {
+            if (!$this->terminated && !$this->redirected) {
                 $this->main();
             }
 
@@ -264,5 +265,13 @@ abstract class BaseController
     public function setForwarded(bool $forwarded): void
     {
         $this->forwarded = $forwarded;
+    }
+
+    /**
+     * @param bool $terminated
+     */
+    public function setTerminated(bool $terminated): void
+    {
+        $this->terminated = $terminated;
     }
 }
