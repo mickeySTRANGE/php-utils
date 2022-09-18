@@ -9,7 +9,7 @@ abstract class BaseForm
     private array $getParam;
     private array $postParam;
 
-    private array $errorMessages = [];
+    private array $errors = [];
 
     private bool $overrideWithPostParameter = true;
 
@@ -53,16 +53,30 @@ abstract class BaseForm
      * @param string $key
      * @param string $message
      */
-    protected function addErrorMessage(string $key, string $message)
+    protected function addErrors(string $key, string $message)
     {
-        $this->errorMessages[$key][] = $message;
+        $this->errors[$key][] = $message;
     }
 
     /**
-     * @return string[]
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @return array
      */
     public function getErrorMessages(): array
     {
-        return $this->errorMessages;
+        $return = [];
+        foreach ($this->errors as $error) {
+            foreach ($error as $message) {
+                $return[] = $message;
+            }
+        }
+        return $return;
     }
 }
