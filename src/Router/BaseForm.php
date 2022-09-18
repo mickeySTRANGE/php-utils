@@ -50,11 +50,12 @@ abstract class BaseForm
     }
 
     /**
+     * @param string $key
      * @param string $message
      */
-    protected function addErrorMessage(string $message)
+    protected function addErrorMessage(string $key, string $message)
     {
-        $this->errorMessages[] = $message;
+        $this->errorMessages[$key][] = $message;
     }
 
     /**
