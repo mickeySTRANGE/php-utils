@@ -118,22 +118,32 @@ abstract class BaseController
     private function isValidCsrfToken($tokenKey = '_token'): bool
     {
 
+        error_log(1);
         if (!$this->isCsrfTokenCheckController()) {
             return true;
         }
 
+        error_log(2);
         if (@$_SERVER['REQUEST_METHOD'] !== 'POST') {
+            error_log($_SERVER['REQUEST_METHOD']);
             return false;
         }
 
+        error_log(3);
         if (!array_key_exists($tokenKey, $_POST) || !array_key_exists($tokenKey, $_SESSION)) {
+            error_log(var_export($_POST, true));
+            error_log(var_export($_SESSION, true));
             return false;
         }
 
+        error_log(4);
+        error_log($_POST[$tokenKey]);
+        error_log($_SESSION[$tokenKey]);
         if (strlen($_POST[$tokenKey]) === 0 || strlen($_SESSION[$tokenKey]) === 0) {
             return false;
         }
 
+        error_log(5);
         if ($_POST[$tokenKey] !== $_SESSION[$tokenKey]) {
             return false;
         }
@@ -199,7 +209,7 @@ abstract class BaseController
     /**
      * @return false
      */
-    protected function isCsrfTokenCheckController()
+    protected function isCsrfTokenCheckController(): bool
     {
         return false;
     }
