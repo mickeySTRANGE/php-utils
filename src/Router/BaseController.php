@@ -173,7 +173,7 @@ abstract class BaseController
             return true;
         }
 
-        if (method_exists($this->formClass, "isValidParameter")) {
+        if (!method_exists($this->formClass, "isValidParameter")) {
             return true;
         }
 
