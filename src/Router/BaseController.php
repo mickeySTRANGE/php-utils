@@ -17,6 +17,7 @@ abstract class BaseController
     private string $viewLogicClass = "";
     private array $viewLogicParam = [];
 
+    private bool $forwarded = false;
     private bool $redirected = false;
 
     protected string $formClass;
@@ -31,15 +32,23 @@ abstract class BaseController
     {
 
         try {
-            $this->preMain();
-            if (!$this->isValidCsrfToken()) {
+
+            if (!$this->forwarded) {
+                $this->preMain();
+            }
+
+            if (!$this->redirected && !$this->isValidCsrfToken()) {
                 $this->errorCsrfToken();
             }
-            if (!$this->isValidParameter()) {
+
+            if (!$this->redirected && !$this->isValidParameter()) {
                 $this->errorParameter();
             }
 
-            $this->main();
+            if (!$this->redirected) {
+                $this->main();
+            }
+
             $this->postMain();
 
             $viewLogicName = $this->getViewLogicClass();
@@ -255,5 +264,13 @@ abstract class BaseController
     public function setFormClass(string $formClass): void
     {
         $this->formClass = $formClass;
+    }
+
+    /**
+     * @param bool $forwarded
+     */
+    public function setForwarded(bool $forwarded): void
+    {
+        $this->forwarded = $forwarded;
     }
 }
