@@ -3,43 +3,65 @@
 namespace mickeySTRANGE\phpUtils\Router;
 
 
-abstract class BaseForm {
+abstract class BaseForm
+{
 
-  private array $getParam;
-  private array $postParam;
+    private array $getParam;
+    private array $postParam;
 
-  private bool $overrideWithPostParameter = true;
+    private array $errorMessages = [];
 
-  /**
-   * BaseForm constructor.
-   * @param array $getParam
-   * @param array $postParam
-   */
-  public function __construct(array $getParam, array $postParam) {
-    $this->getParam = $getParam;
-    $this->postParam = $postParam;
-  }
+    private bool $overrideWithPostParameter = true;
 
-  /**
-   * @param $name
-   * @return string|array|null
-   */
-  protected function getParam($name) {
-
-    $get = array_key_exists($name, $this->getParam) ? $this->getParam[$name] : null;
-    $post = array_key_exists($name, $this->postParam) ? $this->postParam[$name] : null;
-
-    if ($post !== null) {
-      return $post;
-    } else {
-      return $get;
+    /**
+     * BaseForm constructor.
+     * @param array $getParam
+     * @param array $postParam
+     */
+    public function __construct(array $getParam, array $postParam)
+    {
+        $this->getParam = $getParam;
+        $this->postParam = $postParam;
     }
-  }
 
-  /**
-   * @return bool
-   */
-  public function isValidParameter() {
-    return true;
-  }
+    /**
+     * @param $name
+     * @return string|array|null
+     */
+    protected function getParam($name): array|string|null
+    {
+
+        $get = array_key_exists($name, $this->getParam) ? $this->getParam[$name] : null;
+        $post = array_key_exists($name, $this->postParam) ? $this->postParam[$name] : null;
+
+        if ($post !== null) {
+            return $post;
+        } else {
+            return $get;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidParameter(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param string $message
+     */
+    protected function addErrorMessage(string $message)
+    {
+        $this->errorMessages[] = $message;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getErrorMessages(): array
+    {
+        return $this->errorMessages;
+    }
 }
