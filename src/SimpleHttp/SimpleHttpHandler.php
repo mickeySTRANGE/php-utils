@@ -116,7 +116,7 @@ class SimpleHttpHandler {
       return false;
     }
 
-    if (!is_array($arr) || array_key_exists("referer", $arr) || array_key_exists("cookie", $arr)) {
+    if (!is_array($arr) || !array_key_exists("referer", $arr) || !array_key_exists("cookie", $arr)) {
       return false;
     }
 
