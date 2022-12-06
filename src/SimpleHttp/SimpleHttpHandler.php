@@ -15,8 +15,7 @@ use mickeySTRANGE\phpUtils\SimpleHttp\Entity\SimpleHttpResponseHeader;
  * Class SimpleHttpHandler
  * @package mickeySTRANGE\phpUtils\SimpleHttp
  */
-class SimpleHttpHandler
-{
+class SimpleHttpHandler {
 
   private const METHOD_GET = "GET";
   private const METHOD_POST = "POST";
@@ -35,13 +34,12 @@ class SimpleHttpHandler
 
   /**
    * @param string $url
-   * @param array $headers
+   * @param array  $headers
    * @return SimpleHttpResponse
    * @throws SimpleHttpConnectionException
    * @throws SimpleHttpInvalidIUrlException
    */
-  public function get(string $url, array $headers = []): SimpleHttpResponse
-  {
+  public function get(string $url, array $headers = []): SimpleHttpResponse {
 
     $formatted = $this->_formatUrl($url);
     return self::_sendWithRedirect(self::METHOD_GET, $formatted, $headers, '');
@@ -50,9 +48,9 @@ class SimpleHttpHandler
 
   /**
    * @param string $url
-   * @param array $headers
-   * @param array $body
-   * @param bool $isJson
+   * @param array  $headers
+   * @param array  $body
+   * @param bool   $isJson
    * @return SimpleHttpResponse
    * @throws SimpleHttpConnectionException
    * @throws SimpleHttpInvalidIUrlException
@@ -75,33 +73,80 @@ class SimpleHttpHandler
   /**
    * @param bool $useReferer
    */
-  public function setUseReferer(bool $useReferer): void
-  {
+  public function setUseReferer(bool $useReferer): void {
     $this->useReferer = $useReferer;
   }
 
   /**
    * @param bool $useCookie
    */
-  public function setUseCookie(bool $useCookie): void
-  {
+  public function setUseCookie(bool $useCookie): void {
     $this->useCookie = $useCookie;
   }
 
   /**
    * @param bool $sslVerify
    */
-  public function setSslVerify(bool $sslVerify): void
-  {
+  public function setSslVerify(bool $sslVerify): void {
     $this->sslVerify = $sslVerify;
   }
 
   /**
    * @param bool $logOutput
    */
-  public function setLogOutput(bool $logOutput): void
-  {
+  public function setLogOutput(bool $logOutput): void {
     $this->logOutput = $logOutput;
+  }
+
+  /**
+   * @return string
+   */
+  public function exportSession(): string {
+    return serialize(["referer" => $this->referer, "cookie" => $this->cookie]);
+  }
+
+  /**
+   * @param string $str
+   * @return bool
+   */
+  public function importSession(string $str): bool {
+    $arr = unserialize($str);
+
+    if ($arr === false) {
+      return false;
+    }
+
+    if (!is_array($arr) || array_key_exists("referer", $arr) || array_key_exists("cookie", $arr)) {
+      return false;
+    }
+
+    $inputReferer = $arr["referer"];
+    $inputCookie = $arr["cookie"];
+    if (!is_string($inputReferer) || !is_array($inputCookie)) {
+      return false;
+    }
+
+    $beforeReferer = $this->referer;
+    $beforeCookie = $this->cookie;
+    $isSetOk = true;
+
+    $this->referer = $inputReferer;
+    $this->cookie = [];
+    foreach ($inputCookie as $cookie) {
+      if (!($cookie instanceof SimpleHttpCookie)) {
+        $isSetOk = false;
+        break;
+      }
+      $this->cookie[] = $cookie;
+    }
+
+    if (!$isSetOk) {
+      $this->referer = $beforeReferer;
+      $this->cookie = $beforeCookie;
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -109,8 +154,7 @@ class SimpleHttpHandler
    * @return string
    * @throws SimpleHttpInvalidIUrlException
    */
-  private function _formatUrl($url): string
-  {
+  private function _formatUrl($url): string {
 
     $anaUrl = $this->_analyzeUrl($url);
     $protocol = $anaUrl["protocol"];
@@ -134,9 +178,9 @@ class SimpleHttpHandler
    */
   #[ArrayShape([
     "protocol" => "mixed",
-    "domain" => "mixed",
-    "path" => "mixed",
-    "query" => "mixed",
+    "domain"   => "mixed",
+    "path"     => "mixed",
+    "query"    => "mixed",
     "fragment" => "mixed"
   ])] private function _analyzeUrl(
     $url
@@ -154,10 +198,9 @@ class SimpleHttpHandler
 
   /**
    * @param string $message
-   * @param int $level
+   * @param int    $level
    */
-  private function log($message, $level)
-  {
+  private function log($message, $level) {
 
     // for heroku log
     error_log($message);
@@ -167,13 +210,12 @@ class SimpleHttpHandler
   /**
    * @param string $method
    * @param string $url
-   * @param array $headers
+   * @param array  $headers
    * @param string $body
    * @return SimpleHttpResponse
    * @throws SimpleHttpConnectionException
    */
-  private function _sendWithRedirect(string $method, string $url, array $headers, string $body): SimpleHttpResponse
-  {
+  private function _sendWithRedirect(string $method, string $url, array $headers, string $body): SimpleHttpResponse {
 
     $isFirstRequest = true;
 
@@ -239,10 +281,9 @@ class SimpleHttpHandler
 
   /**
    * @param string $requestUrl
-   * @param array $setCookies
+   * @param array  $setCookies
    */
-  private function _analyzeSetCookie(string $requestUrl, array $setCookies)
-  {
+  private function _analyzeSetCookie(string $requestUrl, array $setCookies) {
 
     $domain = $this->_analyzeUrl($requestUrl)["domain"];
     $path = $this->_analyzeUrl($requestUrl)["path"];
@@ -259,7 +300,7 @@ class SimpleHttpHandler
             strtolower(SimpleHttpCookie::DOMAIN) => $newCookie->setDomain($exAttr[1]),
             strtolower(SimpleHttpCookie::EXPIRES) => $newCookie->setExpires($exAttr[1]),
             strtolower(SimpleHttpCookie::HTTP_ONLY) => $newCookie->setHttpOnly(),
-            strtolower(SimpleHttpCookie::MAX_AGE) => $newCookie->setMaxAge((int)$exAttr[1]),
+            strtolower(SimpleHttpCookie::MAX_AGE) => $newCookie->setMaxAge((int) $exAttr[1]),
             strtolower(SimpleHttpCookie::PATH) => $newCookie->setPath($exAttr[1]),
             strtolower(SimpleHttpCookie::SAME_SITE) => $newCookie->setSameSite($exAttr[1]),
             strtolower(SimpleHttpCookie::SECURE) => $newCookie->setSecure(),
@@ -293,13 +334,12 @@ class SimpleHttpHandler
   /**
    * @param string $method
    * @param string $url
-   * @param array $headers
+   * @param array  $headers
    * @param string $body
    * @return SimpleHttpResponse
    * @throws SimpleHttpConnectionException
    */
-  private function _sendRequest(string $method, string $url, array $headers, string $body): SimpleHttpResponse
-  {
+  private function _sendRequest(string $method, string $url, array $headers, string $body): SimpleHttpResponse {
 
     $anaUrl = $this->_analyzeUrl($url);
     $protocol = $anaUrl["protocol"];
@@ -367,7 +407,7 @@ class SimpleHttpHandler
 
     // 結果の取得
     if ($responseHeader->getContentLength() > 0) {
-      $RESPONSE_BODY .= fgets($fp, (int)$responseHeader->getContentLength() + 10);
+      $RESPONSE_BODY .= fgets($fp, (int) $responseHeader->getContentLength() + 10);
     } else {
       $start = intval(microtime(true));
       $len = 0;
@@ -382,7 +422,7 @@ class SimpleHttpHandler
     fclose($fp);
 
     preg_match('!^HTTP/(\d\.\d) (\d{3})(?: (.+))?!', $statusLine, $match);
-    $statusCode = (int)$match[2];
+    $statusCode = (int) $match[2];
 
     if ($responseHeader->getTransferEncoding() == "chunked") {
       $tmp = $RESPONSE_BODY;
@@ -428,8 +468,7 @@ class SimpleHttpHandler
    * @param string $path
    * @return string
    */
-  private function _gatherCookie(string $protocol, string $domain, string $path): string
-  {
+  private function _gatherCookie(string $protocol, string $domain, string $path): string {
 
     $cookieArr = [];
     $time = time();
