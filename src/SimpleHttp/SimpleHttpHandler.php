@@ -406,8 +406,26 @@ class SimpleHttpHandler {
     $responseHeader = new SimpleHttpResponseHeader($RESPONSE_HEADER);
 
     // 結果の取得
-    if ($responseHeader->getContentLength() > 0) {
-      $RESPONSE_BODY .= fgets($fp, (int) $responseHeader->getContentLength() + 10);
+    $contentLength = (int) $responseHeader->getContentLength();
+    if ($contentLength > 0) {
+      $count = 0;
+      $beforeLength = 0;
+      while (true) {
+        $RESPONSE_BODY .= fgets($fp, $contentLength - $beforeLength + 1);
+        $nowLength = strlen($RESPONSE_BODY);
+        if ($nowLength === $contentLength) {
+          break;
+        }
+        if ($beforeLength === $nowLength) {
+          $count++;
+          if ($count === 5) {
+            break;
+          }
+        } else {
+          $beforeLength = $nowLength;
+          $count = 0;
+        }
+      }
     } else {
       $start = intval(microtime(true));
       $len = 0;
