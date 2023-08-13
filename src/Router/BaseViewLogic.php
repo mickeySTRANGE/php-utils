@@ -38,6 +38,9 @@ abstract class BaseViewLogic
 
         $views = $this->viewFileDirectory;
         $cache = $this->viewFileDirectory . '/cache';
+        if(!is_dir($cache)){
+            mkdir($cache, 0777, true);
+        }
 
         preg_match('/\\\\([^\\\\]+)ViewLogic$/', get_class($this), $match);
         $view = $this->camelToSnake($match[1]);
